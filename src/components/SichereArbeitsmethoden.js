@@ -52,9 +52,9 @@ function SichereArbeitsmethoden() {
     } else {
       const matchedAnswers = new Set();
   
-      feedbackDetails = correctAnswers.map((correctAnswer) => {
+      feedbackDetails = correctAnswers.map((correctAnswer, index) => {
         const userIndex = userInput.findIndex(
-          (answer, index) => answer === correctAnswer && !matchedAnswers.has(index)
+          (userAnswer, userAnswerIndex) => userAnswer === correctAnswer && !matchedAnswers.has(userAnswerIndex)
         );
   
         if (userIndex !== -1) {
