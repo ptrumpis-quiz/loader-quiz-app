@@ -6,7 +6,7 @@ function HallenSplit() {
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [feedback, setFeedback] = useState("");
-  const [correctAnswer, setCorrectAnswer] = useState(""); // Added state for correct answer
+  const [correctAnswer, setCorrectAnswer] = useState("");
   const [isFinished, setIsFinished] = useState(false);
   const [answered, setAnswered] = useState(false);
 
@@ -22,16 +22,16 @@ function HallenSplit() {
 
     const currentQuestion = data[currentIndex];
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
-      ans.toLowerCase().trim()
+      ans.trim()
     );
-    const userAnswerTrimmed = userAnswer.toLowerCase().trim();
+    const userAnswerTrimmed = userAnswer.trim();
     const isCorrect = correctAnswers.includes(userAnswerTrimmed);
 
     if (isCorrect) {
       setScore((prev) => prev + 1);
-      setCorrectAnswer(""); // Reset correct answer state if correct
+      setCorrectAnswer("");
     } else {
-      setCorrectAnswer(correctAnswers.join(", ")); // Store the correct answer(s) if incorrect
+      setCorrectAnswer(correctAnswers.join(", "));
     }
     setTotalAnswered((prev) => prev + 1);
 
@@ -45,7 +45,7 @@ function HallenSplit() {
     } else {
       setCurrentIndex((prev) => prev + 1);
       setFeedback("");
-      setCorrectAnswer(""); // Reset correct answer when moving to next question
+      setCorrectAnswer("");
     }
   };
 
@@ -60,7 +60,7 @@ function HallenSplit() {
     setTotalAnswered(0);
     setFeedback("");
     setAnswered(false);
-    setCorrectAnswer(""); // Reset correct answer state
+    setCorrectAnswer("");
   };
 
   if (!data.length) return <p>Loading...</p>;
@@ -81,8 +81,9 @@ function HallenSplit() {
   return (
     <div>
       <h2>Hallen Split</h2>
+      <p>In welcher Halle wird das Land sortiert?</p>
       <div style={{ marginTop: "40px" }}></div>
-      <h3>{currentQuestion.question}</h3>
+      <h3 style={{ marginLeft: "180px" }}>{currentQuestion.question}</h3>
       <div>
         {["Halle 4", "Halle 7", "Fracht West", "Embargo"].map((option) => (
           <button
@@ -101,7 +102,7 @@ function HallenSplit() {
             {feedback}
           </p>
           {feedback === "Falsch" && correctAnswer && (
-            <p style={{ color: "orange" }}>{currentQuestion.question}: {correctAnswer}</p>
+            <p style={{ color: "green" }}>Richtig wäre: <strong>{currentQuestion.question} {correctAnswer}</strong></p>
           )}
           <button onClick={nextQuestion}>Nächste Frage</button>
         </div>
