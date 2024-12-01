@@ -1,0 +1,23 @@
+[
+    {
+      "question": "Nenne drei Sicherheitsmaßnahmen beim Arbeiten auf einer Leiter.",
+      "correctAnswers": ["Stabile Leiter", "Sicherer Stand", "Kein Überstrecken"],
+      "strictOrder": false
+    },
+    {
+      "question": "In welcher Reihenfolge setzt man eine Schutzbrille auf?",
+      "correctAnswers": ["Hände reinigen", "Brille aufsetzen"],
+      "strictOrder": true
+    },
+    {
+      "question": "Nenne zwei Schritte für sicheres Heben schwerer Lasten.",
+      "correctAnswers": ["Gerader Rücken", "Beine beugen"],
+      "strictOrder": false
+    },
+    {
+      "question": "Welche drei Dinge gehören zur persönlichen Schutzausrüstung?",
+      "correctAnswers": ["Helm", "Handschuhe", "Schuhe"],
+      "strictOrder": false
+    }
+  ]
+  
