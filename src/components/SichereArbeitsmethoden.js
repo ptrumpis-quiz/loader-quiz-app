@@ -6,6 +6,7 @@ function SichereArbeitsmethoden() {
   const [userAnswers, setUserAnswers] = useState([]);
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState("");
+  const [detailedFeedback, setDetailedFeedback] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
   const [answered, setAnswered] = useState(false);
 
@@ -31,21 +32,50 @@ function SichereArbeitsmethoden() {
     );
     const userInput = userAnswers.map((ans) => ans.toLowerCase().trim());
 
-    let isCorrect = false;
     let points = 0;
+    let feedbackDetails = [];
 
     if (currentQuestion.strictOrder) {
-      isCorrect = JSON.stringify(userInput) === JSON.stringify(correctAnswers);
+      const isCorrect = JSON.stringify(userInput) === JSON.stringify(correctAnswers);
       points = isCorrect ? correctAnswers.length : 0;
+
+      feedbackDetails = correctAnswers.map((correctAnswer, index) => {
+        const userAnswer = userInput[index] || "(keine Eingabe)";
+        return {
+          userAnswer,
+          correctAnswer,
+          isCorrect: userAnswer === correctAnswer,
+        };
+      });
     } else {
-      points = userInput.reduce((sum, answer) => {
-        return sum + (correctAnswers.includes(answer) ? 1 : 0);
-      }, 0);
-      isCorrect = points === correctAnswers.length;
+      const matchedAnswers = new Set();
+
+      feedbackDetails = correctAnswers.map((correctAnswer) => {
+        const userIndex = userInput.findIndex(
+          (answer, index) => answer === correctAnswer && !matchedAnswers.has(index)
+        );
+
+        if (userIndex !== -1) {
+          matchedAnswers.add(userIndex);
+          points++;
+          return {
+            userAnswer: userInput[userIndex],
+            correctAnswer,
+            isCorrect: true,
+          };
+        } else {
+          return {
+            userAnswer: "(keine Eingabe oder falsch)",
+            correctAnswer,
+            isCorrect: false,
+          };
+        }
+      });
     }
 
     setScore((prev) => prev + points);
-    setFeedback(isCorrect ? "Richtig" : "Falsch");
+    setDetailedFeedback(feedbackDetails);
+    setFeedback(points === correctAnswers.length ? "Richtig" : "Falsch");
   };
 
   const nextQuestion = () => {
@@ -56,16 +86,22 @@ function SichereArbeitsmethoden() {
       setCurrentIndex((prev) => prev + 1);
       setUserAnswers([]);
       setFeedback("");
+      setDetailedFeedback([]);
     }
   };
 
   if (!data.length) return <p>Loading...</p>;
+
+  const totalPoints = data.reduce((sum, question) => sum + question.correctAnswers.length, 0);
+
   if (isFinished)
     return (
       <div>
         <h2>Sichere Arbeitsmethoden</h2>
         <h4>Training abgeschlossen!</h4>
-        <p>Dein Ergebnis: <strong>{score} Punkte</strong></p>
+        <p>
+          Dein Ergebnis: <strong>{score} / {totalPoints} Punkte</strong>
+        </p>
       </div>
     );
 
@@ -97,7 +133,25 @@ function SichereArbeitsmethoden() {
           <p style={{ color: feedback === "Richtig" ? "green" : "red" }}>
             {feedback}
           </p>
-          {feedback && <button onClick={nextQuestion}>Nächste Frage</button>}
+          {detailedFeedback.length > 0 && (
+            <div>
+              <h4>Antwortübersicht:</h4>
+              <ul>
+                {detailedFeedback.map((item, index) => (
+                  <li key={index} style={{ color: item.isCorrect ? "green" : "red" }}>
+                    {item.isCorrect ? (
+                      `Richtig: ${item.userAnswer}`
+                    ) : (
+                      <>
+                        Falsch: {item.userAnswer} (Richtig: {item.correctAnswer})
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <button onClick={nextQuestion}>Nächste Frage</button>
         </div>
       )}
     </div>
