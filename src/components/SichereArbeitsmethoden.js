@@ -92,7 +92,7 @@ function SichereArbeitsmethoden() {
     }
   };
 
-  const restartTraining = () => {
+  const restartTest = () => {
     setCurrentIndex(0);
     setUserAnswers([]);
     setScore(0);
@@ -114,7 +114,7 @@ function SichereArbeitsmethoden() {
         <p>
           Dein Ergebnis: <strong>{score} / {totalPoints} Punkte</strong>
         </p>
-        <button onClick={restartTraining}>Test wiederholen</button>
+        <button onClick={restartTest}>Test wiederholen</button>
       </div>
     );
 

@@ -6,6 +6,7 @@ function HallenSplit() {
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [feedback, setFeedback] = useState("");
+  const [correctAnswer, setCorrectAnswer] = useState(""); // Added state for correct answer
   const [isFinished, setIsFinished] = useState(false);
   const [answered, setAnswered] = useState(false);
 
@@ -23,9 +24,15 @@ function HallenSplit() {
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
       ans.toLowerCase().trim()
     );
-    const isCorrect = correctAnswers.includes(userAnswer.toLowerCase().trim());
+    const userAnswerTrimmed = userAnswer.toLowerCase().trim();
+    const isCorrect = correctAnswers.includes(userAnswerTrimmed);
 
-    if (isCorrect) setScore((prev) => prev + 1);
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+      setCorrectAnswer(""); // Reset correct answer state if correct
+    } else {
+      setCorrectAnswer(correctAnswers.join(", ")); // Store the correct answer(s) if incorrect
+    }
     setTotalAnswered((prev) => prev + 1);
 
     setFeedback(isCorrect ? "Richtig" : "Falsch");
@@ -38,11 +45,22 @@ function HallenSplit() {
     } else {
       setCurrentIndex((prev) => prev + 1);
       setFeedback("");
+      setCorrectAnswer(""); // Reset correct answer when moving to next question
     }
   };
 
   const endTestEarly = () => {
     setIsFinished(true);
+  };
+
+  const restartTest = () => {
+    setIsFinished(false);
+    setCurrentIndex(0);
+    setScore(0);
+    setTotalAnswered(0);
+    setFeedback("");
+    setAnswered(false);
+    setCorrectAnswer(""); // Reset correct answer state
   };
 
   if (!data.length) return <p>Loading...</p>;
@@ -51,7 +69,10 @@ function HallenSplit() {
       <div>
         <h2>Hallen Split</h2>
         <h4>Test beendet!</h4>
-        <p>Dein Ergebnis: <strong>{score} / {totalAnswered}</strong> Fragen wurden richtig beantwortet.</p>
+        <p>
+          Dein Ergebnis: <strong>{score} / {totalAnswered}</strong> Fragen wurden richtig beantwortet.
+        </p>
+        <button onClick={restartTest}>Test wiederholen</button>
       </div>
     );
 
@@ -68,6 +89,7 @@ function HallenSplit() {
             key={option}
             onClick={() => checkAnswer(option)}
             disabled={answered}
+            className={option.toLowerCase().replace(" ", "-")}
           >
             {option}
           </button>
@@ -78,6 +100,9 @@ function HallenSplit() {
           <p style={{ color: feedback === "Richtig" ? "green" : "red" }}>
             {feedback}
           </p>
+          {feedback === "Falsch" && correctAnswer && (
+            <p style={{ color: "orange" }}>{currentQuestion.question}: {correctAnswer}</p>
+          )}
           <button onClick={nextQuestion}>Nächste Frage</button>
         </div>
       )}
