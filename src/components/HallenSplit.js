@@ -102,7 +102,7 @@ function HallenSplit() {
             {feedback}
           </p>
           {feedback === "Falsch" && correctAnswer && (
-            <p style={{ color: "green" }}>Richtig wäre: <strong>{currentQuestion.question} {correctAnswer}</strong></p>
+            <p style={{ color: "green" }}>Richtig wäre: <strong>{currentQuestion.question} = {correctAnswer}</strong></p>
           )}
           <button onClick={nextQuestion}>Nächste Frage</button>
         </div>

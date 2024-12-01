@@ -67,7 +67,7 @@ function SichereArbeitsmethoden() {
           };
         } else {
           return {
-            userAnswer: "(keine oder falsche Eingabe)",
+            userAnswer: "",
             correctAnswer,
             isCorrect: false,
           };

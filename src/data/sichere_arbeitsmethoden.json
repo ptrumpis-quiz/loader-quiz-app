@@ -1,22 +1,48 @@
-[
+  [
     {
-      "question": "Nenne drei Sicherheitsmaßnahmen beim Arbeiten auf einer Leiter.",
-      "correctAnswers": ["Stabile Leiter", "Sicherer Stand", "Kein Überstrecken"],
+      "question": "Die 6 Punkte der sicheren Arbeitsmethoden (AHASKP).",
+      "correctAnswers": [
+        "Arbeitsvorbereitung",
+        "Heben und Absetzen",
+        "Ausrutschen und Stürzen",
+        "Schieben und Ziehen",
+        "Kraftbetriebene Geräte",
+        "Plan für das Unerwartete"
+      ],
       "strictOrder": false
     },
     {
-      "question": "In welcher Reihenfolge setzt man eine Schutzbrille auf?",
-      "correctAnswers": ["Hände reinigen", "Brille aufsetzen"],
+      "question": "Erklärung der Kraftzonen (Wo, Wie, Warum).",
+      "correctAnswers": [
+        "zwischen Hüfte und Schulter",
+        "nah am Körper",
+        "maximale Kraft mit höchstem Komfort"
+      ],
+      "strictOrder": false
+    },
+    {
+      "question": "Die 8 Punkte für das sichere Heben und Absetzen (in der richtigen Reihenfolge).",
+      "correctAnswers": [
+        "Hilfsmittel benutzen",
+        "Nah heran gehen",
+        "Füße richtig stellen",
+        "Knie beugen",
+        "Gewicht prüfen",
+        "Fester Griff",
+        "Gleichmäßige Bewegung",
+        "Füße bewegen"
+      ],
       "strictOrder": true
     },
     {
-      "question": "Nenne zwei Schritte für sicheres Heben schwerer Lasten.",
-      "correctAnswers": ["Gerader Rücken", "Beine beugen"],
-      "strictOrder": false
-    },
-    {
-      "question": "Welche drei Dinge gehören zur persönlichen Schutzausrüstung?",
-      "correctAnswers": ["Helm", "Handschuhe", "Schuhe"],
+      "question": "Die 5 Punkte um Ausrutschen und Stürzen zu vermeiden.",
+      "correctAnswers": [
+        "Augen auf vor dem ersten Schritt",
+        "Sich den Gegebenheiten anpassen",
+        "Zügig gehen, nicht rennen",
+        "Sicheren Stand einnehmen",
+        "Keine Anlagen betreten"
+      ],
       "strictOrder": false
     }
   ]
