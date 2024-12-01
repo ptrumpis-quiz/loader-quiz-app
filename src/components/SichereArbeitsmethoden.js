@@ -18,27 +18,29 @@ function SichereArbeitsmethoden() {
 
   const handleAnswerChange = (index, value) => {
     const newAnswers = [...userAnswers];
-    newAnswers[index] = value;
+    newAnswers[index] = value || "";
     setUserAnswers(newAnswers);
   };
-
+  
   const checkAnswers = () => {
     if (answered) return;
     setAnswered(true);
-
+  
     const currentQuestion = data[currentIndex];
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
       ans.toLowerCase().trim()
     );
-    const userInput = userAnswers.map((ans) => ans.toLowerCase().trim());
-
+    const userInput = userAnswers.map((ans) =>
+      (ans || "").toLowerCase().trim()
+    );
+  
     let points = 0;
     let feedbackDetails = [];
-
+  
     if (currentQuestion.strictOrder) {
       const isCorrect = JSON.stringify(userInput) === JSON.stringify(correctAnswers);
       points = isCorrect ? correctAnswers.length : 0;
-
+  
       feedbackDetails = correctAnswers.map((correctAnswer, index) => {
         const userAnswer = userInput[index] || "(keine Eingabe)";
         return {
@@ -49,12 +51,12 @@ function SichereArbeitsmethoden() {
       });
     } else {
       const matchedAnswers = new Set();
-
+  
       feedbackDetails = correctAnswers.map((correctAnswer) => {
         const userIndex = userInput.findIndex(
           (answer, index) => answer === correctAnswer && !matchedAnswers.has(index)
         );
-
+  
         if (userIndex !== -1) {
           matchedAnswers.add(userIndex);
           points++;
@@ -72,11 +74,11 @@ function SichereArbeitsmethoden() {
         }
       });
     }
-
+  
     setScore((prev) => prev + points);
     setDetailedFeedback(feedbackDetails);
     setFeedback(points === correctAnswers.length ? "Richtig" : "Falsch");
-  };
+  };  
 
   const nextQuestion = () => {
     setAnswered(false);
