@@ -5,7 +5,9 @@ function SichereArbeitsmethoden() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState([]);
   const [score, setScore] = useState(0);
+  const [feedback, setFeedback] = useState("");
   const [isFinished, setIsFinished] = useState(false);
+  const [answered, setAnswered] = useState(false);
 
   useEffect(() => {
     import("../data/sichere_arbeitsmethoden.json").then((module) => {
@@ -20,46 +22,52 @@ function SichereArbeitsmethoden() {
   };
 
   const checkAnswers = () => {
+    if (answered) return;
+    setAnswered(true);
+
     const currentQuestion = data[currentIndex];
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
       ans.toLowerCase().trim()
     );
     const userInput = userAnswers.map((ans) => ans.toLowerCase().trim());
 
-        // Berechnung der Punkte für jede richtige Antwort
-        let points = 0;
+    let isCorrect = false;
+    let points = 0;
 
-        if (currentQuestion.strictOrder) {
-          // Strikte Reihenfolge: Alle müssen korrekt und in der richtigen Reihenfolge sein
-          if (JSON.stringify(userInput) === JSON.stringify(correctAnswers)) {
-            points = correctAnswers.length; // Volle Punktzahl
-          }
-        } else {
-          // Unabhängige Reihenfolge: Zähle jede richtige Antwort
-          points = userInput.reduce((sum, answer) => {
-            return sum + (correctAnswers.includes(answer) ? 1 : 0);
-          }, 0);
-        }
-    
-        setScore((prev) => prev + points);
-    
-        // Fortschritt oder Abschluss des Trainings
-        if (currentIndex + 1 === data.length) {
-          setIsFinished(true);
-        } else {
-          setCurrentIndex((prev) => prev + 1);
-          setUserAnswers([]);
-        }
-      };
+    if (currentQuestion.strictOrder) {
+      isCorrect = JSON.stringify(userInput) === JSON.stringify(correctAnswers);
+      points = isCorrect ? correctAnswers.length : 0;
+    } else {
+      points = userInput.reduce((sum, answer) => {
+        return sum + (correctAnswers.includes(answer) ? 1 : 0);
+      }, 0);
+      isCorrect = points === correctAnswers.length;
+    }
 
-      if (!data.length) return <p>Loading...</p>;
-      if (isFinished)
-        return (
-          <div>
-            <h2>Sichere Arbeitsmethoden Training abgeschlossen!</h2>
-            <p>Dein Ergebnis: {score} Punkte</p>
-          </div>
-        );
+    setScore((prev) => prev + points);
+    setFeedback(isCorrect ? "Richtig" : "Falsch");
+  };
+
+  const nextQuestion = () => {
+    setAnswered(false);
+    if (currentIndex + 1 === data.length) {
+      setIsFinished(true);
+    } else {
+      setCurrentIndex((prev) => prev + 1);
+      setUserAnswers([]);
+      setFeedback("");
+    }
+  };
+
+  if (!data.length) return <p>Loading...</p>;
+  if (isFinished)
+    return (
+      <div>
+        <h2>Sichere Arbeitsmethoden</h2>
+        <h4>Training abgeschlossen!</h4>
+        <p>Dein Ergebnis: <strong>{score} Punkte</strong></p>
+      </div>
+    );
 
   const currentQuestion = data[currentIndex];
 
@@ -81,7 +89,17 @@ function SichereArbeitsmethoden() {
             />
           ))}
       </div>
-      <button onClick={checkAnswers}>Bestätigen</button>
+      <button onClick={checkAnswers} disabled={answered}>
+        Überprüfen
+      </button>
+      {feedback && (
+        <div>
+          <p style={{ color: feedback === "Richtig" ? "green" : "red" }}>
+            {feedback}
+          </p>
+          {feedback && <button onClick={nextQuestion}>Nächste Frage</button>}
+        </div>
+      )}
     </div>
   );
 }

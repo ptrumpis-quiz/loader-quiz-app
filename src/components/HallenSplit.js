@@ -5,7 +5,9 @@ function HallenSplit() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
+  const [feedback, setFeedback] = useState("");
   const [isFinished, setIsFinished] = useState(false);
+  const [answered, setAnswered] = useState(false);
 
   useEffect(() => {
     import("../data/hallen_split.json").then((module) => {
@@ -14,6 +16,9 @@ function HallenSplit() {
   }, []);
 
   const checkAnswer = (userAnswer) => {
+    if (answered) return;
+    setAnswered(true);
+
     const currentQuestion = data[currentIndex];
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
       ans.toLowerCase().trim()
@@ -23,10 +28,16 @@ function HallenSplit() {
     if (isCorrect) setScore((prev) => prev + 1);
     setTotalAnswered((prev) => prev + 1);
 
+    setFeedback(isCorrect ? "Richtig" : "Falsch");
+  };
+
+  const nextQuestion = () => {
+    setAnswered(false);
     if (currentIndex + 1 === data.length) {
       setIsFinished(true);
     } else {
       setCurrentIndex((prev) => prev + 1);
+      setFeedback("");
     }
   };
 
@@ -38,8 +49,9 @@ function HallenSplit() {
   if (isFinished)
     return (
       <div>
-        <h2>Hallen Split Training abgeschlossen!</h2>
-        <p>Dein Ergebnis: {score} / {totalAnswered}</p>
+        <h2>Hallen Split</h2>
+        <h4>Test beendet!</h4>
+        <p>Dein Ergebnis: <strong>{score} / {totalAnswered}</strong> Fragen wurden richtig beantwortet.</p>
       </div>
     );
 
@@ -52,13 +64,25 @@ function HallenSplit() {
       <h3>{currentQuestion.question}</h3>
       <div>
         {["Halle 4", "Halle 7", "Fracht West", "Embargo"].map((option) => (
-          <button key={option} onClick={() => checkAnswer(option)}>
+          <button
+            key={option}
+            onClick={() => checkAnswer(option)}
+            disabled={answered}
+          >
             {option}
           </button>
         ))}
       </div>
-      <button onClick={endTestEarly} style={{ marginTop: "60px" }}>
-        Test beenden
+      {feedback && (
+        <div>
+          <p style={{ color: feedback === "Richtig" ? "green" : "red" }}>
+            {feedback}
+          </p>
+          <button onClick={nextQuestion}>Nächste Frage</button>
+        </div>
+      )}
+      <button onClick={endTestEarly} style={{ marginTop: "20px" }}>
+        Test vorzeitig beenden
       </button>
     </div>
   );

@@ -1,7 +1,7 @@
 [
-    { "question": "Wo gehört Österreich hin?", "correctAnswers": ["Halle 4"] },
-    { "question": "Wo gehört Brasilien hin?", "correctAnswers": ["Fracht West"] },
-    { "question": "Wo gehört Russland hin?", "correctAnswers": ["Embargo"] },
-    { "question": "Wo gehört Italien hin?", "correctAnswers": ["Halle 7"] }
+    { "question": "Österreich", "correctAnswers": ["Halle 4"] },
+    { "question": "Brasilien", "correctAnswers": ["Fracht West"] },
+    { "question": "Russland", "correctAnswers": ["Embargo"] },
+    { "question": "Italien", "correctAnswers": ["Halle 7"] }
   ]
   
