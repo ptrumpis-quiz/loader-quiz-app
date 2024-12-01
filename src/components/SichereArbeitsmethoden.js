@@ -67,7 +67,7 @@ function SichereArbeitsmethoden() {
           };
         } else {
           return {
-            userAnswer: "(keine Eingabe oder falsch)",
+            userAnswer: userInput[userIndex] || "(keine Eingabe)",
             correctAnswer,
             isCorrect: false,
           };
@@ -92,6 +92,16 @@ function SichereArbeitsmethoden() {
     }
   };
 
+  const restartTraining = () => {
+    setCurrentIndex(0);
+    setUserAnswers([]);
+    setScore(0);
+    setFeedback("");
+    setDetailedFeedback([]);
+    setIsFinished(false);
+    setAnswered(false);
+  };
+
   if (!data.length) return <p>Loading...</p>;
 
   const totalPoints = data.reduce((sum, question) => sum + question.correctAnswers.length, 0);
@@ -100,10 +110,11 @@ function SichereArbeitsmethoden() {
     return (
       <div>
         <h2>Sichere Arbeitsmethoden</h2>
-        <h4>Training abgeschlossen!</h4>
+        <h4>Test abgeschlossen!</h4>
         <p>
           Dein Ergebnis: <strong>{score} / {totalPoints} Punkte</strong>
         </p>
+        <button onClick={restartTraining}>Test wiederholen</button>
       </div>
     );
 
