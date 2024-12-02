@@ -124,7 +124,7 @@ function HallenSplit() {
       <h2>Hallen Split {isRepetition && "(Wiederholung)"}</h2>
       <p>In welcher Halle wird das Paket sortiert?</p>
       <div style={{ marginTop: "40px" }}></div>
-      <h3 style={{ marginLeft: "180px" }}>{currentQuestion.question}</h3>
+      <h3 style={{ marginLeft: "100px" }}>{currentQuestion.question}</h3>
       <div>
         {["Halle 4", "Halle 7", "Fracht West", "Embargo"].map((option) => (
           <button
