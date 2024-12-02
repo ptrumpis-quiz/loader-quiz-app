@@ -83,7 +83,7 @@ function HallenSplit() {
             <h4 style={{ color: "blue" }}>Deine falsch beantwortete Fragen und die richtigen Antworten:</h4>
             <ul>
               {wrongAnswers.map((item, index) => (
-                <li key={index} >
+                <li key={index} style={{ color: "green" }}>
                   <strong>{item.question}</strong>: <strong>{item.correctAnswer}</strong>
                 </li>
               ))}
