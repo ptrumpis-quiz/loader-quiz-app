@@ -28,17 +28,17 @@ function SichereArbeitsmethoden() {
   
     const currentQuestion = data[currentIndex];
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
-      ans.toLowerCase().trim()
+      ans.trim()
     );
     const userInput = userAnswers.map((ans) =>
-      (ans || "").toLowerCase().trim()
+      (ans || "").trim()
     );
   
     let points = 0;
     let feedbackDetails = [];
   
     if (currentQuestion.strictOrder) {
-      const isCorrect = JSON.stringify(userInput) === JSON.stringify(correctAnswers);
+      const isCorrect = JSON.stringify(userInput).toLowerCase() === JSON.stringify(correctAnswers).toLowerCase();
       points = isCorrect ? correctAnswers.length : 0;
   
       feedbackDetails = correctAnswers.map((correctAnswer, index) => {
@@ -46,7 +46,7 @@ function SichereArbeitsmethoden() {
         return {
           userAnswer,
           correctAnswer,
-          isCorrect: userAnswer === correctAnswer,
+          isCorrect: userAnswer.toLowerCase() === correctAnswer.toLowerCase(),
         };
       });
     } else {
@@ -54,7 +54,7 @@ function SichereArbeitsmethoden() {
   
       feedbackDetails = correctAnswers.map((correctAnswer, index) => {
         const userIndex = userInput.findIndex(
-          (userAnswer, userAnswerIndex) => userAnswer === correctAnswer && !matchedAnswers.has(userAnswerIndex)
+          (userAnswer, userAnswerIndex) => userAnswer.toLowerCase() === correctAnswer.toLowerCase() && !matchedAnswers.has(userAnswerIndex)
         );
   
         if (userIndex !== -1) {
@@ -144,7 +144,7 @@ function SichereArbeitsmethoden() {
       {feedback && (
         <div>
           <p style={{ color: feedback === "Richtig" ? "green" : "red" }}>
-            {feedback}
+            <strong>{feedback}</strong>
           </p>
           {detailedFeedback.length > 0 && (
             <div>
