@@ -9,6 +9,7 @@ function HallenSplit() {
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [isFinished, setIsFinished] = useState(false);
   const [answered, setAnswered] = useState(false);
+  const [wrongAnswers, setWrongAnswers] = useState([]);
 
   useEffect(() => {
     import("../data/hallen_split.json").then((module) => {
@@ -32,6 +33,10 @@ function HallenSplit() {
       setCorrectAnswer("");
     } else {
       setCorrectAnswer(correctAnswers.join(", "));
+      setWrongAnswers((prev) => [
+        ...prev,
+        { question: currentQuestion.question, correctAnswer: correctAnswers.join(", ") }
+      ]);
     }
     setTotalAnswered((prev) => prev + 1);
 
@@ -61,6 +66,7 @@ function HallenSplit() {
     setFeedback("");
     setAnswered(false);
     setCorrectAnswer("");
+    setWrongAnswers([]);
   };
 
   if (!data.length) return <p>Loading...</p>;
@@ -72,6 +78,18 @@ function HallenSplit() {
         <p>
           Dein Ergebnis: <strong>{score} / {totalAnswered}</strong> Fragen wurden richtig beantwortet.
         </p>
+        {wrongAnswers.length > 0 && (
+          <div>
+            <h4 style={{ color: "blue" }}>Deine falsch beantwortete Fragen und die richtigen Antworten:</h4>
+            <ul>
+              {wrongAnswers.map((item, index) => (
+                <li key={index} >
+                  <strong>{item.question}</strong>: <strong>{item.correctAnswer}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <button onClick={restartTest}>Test wiederholen</button>
       </div>
     );
@@ -99,7 +117,7 @@ function HallenSplit() {
       {feedback && (
         <div>
           <p style={{ color: feedback === "Richtig" ? "green" : "red" }}>
-            {feedback}
+            <strong>{feedback}</strong>
           </p>
           {feedback === "Falsch" && correctAnswer && (
             <p style={{ color: "green" }}>Richtig wäre: <strong>{currentQuestion.question} = {correctAnswer}</strong></p>
