@@ -10,6 +10,7 @@ function HallenSplit() {
   const [isFinished, setIsFinished] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [wrongAnswers, setWrongAnswers] = useState([]);
+  const [isRepetition, setIsRepetition] = useState(false);
 
   useEffect(() => {
     import("../data/hallen_split.json").then((module) => {
@@ -35,7 +36,7 @@ function HallenSplit() {
       setCorrectAnswer(correctAnswers.join(", "));
       setWrongAnswers((prev) => [
         ...prev,
-        { question: currentQuestion.question, correctAnswer: correctAnswers.join(", ") }
+        { question: currentQuestion.question, correctAnswers: correctAnswers }
       ]);
     }
     setTotalAnswered((prev) => prev + 1);
@@ -60,6 +61,7 @@ function HallenSplit() {
 
   const restartTest = () => {
     setIsFinished(false);
+    setIsRepetition(false);
     setCurrentIndex(0);
     setScore(0);
     setTotalAnswered(0);
@@ -67,6 +69,16 @@ function HallenSplit() {
     setAnswered(false);
     setCorrectAnswer("");
     setWrongAnswers([]);
+  };
+
+  const startRepititionMode = () => {
+    setIsFinished(false);
+    setIsRepetition(true);
+    setData(wrongAnswers);
+    setWrongAnswers([]);
+    setCurrentIndex(0);
+    setScore(0);
+    setFeedback("");
   };
 
   if (!data.length) return <p>Loading...</p>;
@@ -80,14 +92,17 @@ function HallenSplit() {
         </p>
         {wrongAnswers.length > 0 && (
           <div>
-            <h4 style={{ color: "blue" }}>Deine falsch beantwortete Fragen und die richtigen Antworten:</h4>
+            <h4>Falsch beantwortete Fragen:</h4>
             <ul>
               {wrongAnswers.map((item, index) => (
-                <li key={index} style={{ color: "green" }}>
-                  <strong>{item.question}</strong>: <strong>{item.correctAnswer}</strong>
+                <li key={index} className={item.correctAnswers.join(", ").toLowerCase().replace(" ", "-")}>
+                  <strong>{item.question}</strong> = <strong>{item.correctAnswers.join(", ")}</strong>
                 </li>
               ))}
             </ul>
+            <button onClick={startRepititionMode}>
+              Fehlerhafte Antworten trainieren
+            </button>
           </div>
         )}
         <button onClick={restartTest}>Test wiederholen</button>
@@ -98,8 +113,8 @@ function HallenSplit() {
 
   return (
     <div>
-      <h2>Hallen Split</h2>
-      <p>In welcher Halle wird das Land sortiert?</p>
+      <h2>Hallen Split {isRepetition && "(Wiederholung)"}</h2>
+      <p>In welcher Halle wird das Paket sortiert?</p>
       <div style={{ marginTop: "40px" }}></div>
       <h3 style={{ marginLeft: "180px" }}>{currentQuestion.question}</h3>
       <div>
@@ -120,7 +135,9 @@ function HallenSplit() {
             <strong>{feedback}</strong>
           </p>
           {feedback === "Falsch" && correctAnswer && (
-            <p style={{ color: "green" }}>Richtig wäre: <strong>{currentQuestion.question} = {correctAnswer}</strong></p>
+            <p style={{ color: "green" }}>
+              Richtig wäre: <strong>{currentQuestion.question} = {correctAnswer}</strong>
+            </p>
           )}
           <button onClick={nextQuestion}>Nächste Frage</button>
         </div>

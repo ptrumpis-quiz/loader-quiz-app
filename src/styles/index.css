@@ -14,8 +14,8 @@ button {
 }
 
 button.halle-4 {
-  background-color: yellow;
-  color: black;
+  background-color: goldenrod;
+  color: white;
 }
 
 button.halle-7 {
@@ -31,6 +31,22 @@ button.fracht-west {
 button.embargo {
   background-color: black;
   color: white;
+}
+
+li.halle-4 {
+  color: goldenrod;
+}
+
+li.halle-7 {
+  color: red;
+}
+
+li.fracht-west {
+  color: blue;
+}
+
+li.embargo {
+  color: black;
 }
 
 input {
