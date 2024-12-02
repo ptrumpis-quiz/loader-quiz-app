@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Training from "./components/Training";
+import Training from "./pages/Training";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
