@@ -21,26 +21,34 @@ function SichereArbeitsmethoden() {
     newAnswers[index] = value || "";
     setUserAnswers(newAnswers);
   };
-  
+
+  const sanitizeInput = (input) => {
+    return input.replace(/[.,:;!?_\-\/\\]/g, "").trim();
+  };
+
   const checkAnswers = () => {
     if (answered) return;
     setAnswered(true);
-  
+
     const currentQuestion = data[currentIndex];
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
-      ans.trim()
+      sanitizeInput(ans)
     );
     const userInput = userAnswers.map((ans) =>
-      (ans || "").trim()
+      sanitizeInput(ans || "")
     );
-  
-    let points = 0;
+
+    const strictOrder = currentQuestion.strictOrder ?? false;
+    const points = currentQuestion.points;
+
+    let earnedPoints = 0;
     let feedbackDetails = [];
-  
-    if (currentQuestion.strictOrder) {
-      const isCorrect = JSON.stringify(userInput).toLowerCase() === JSON.stringify(correctAnswers).toLowerCase();
-      points = isCorrect ? correctAnswers.length : 0;
-  
+    let isAllCorrect = false;
+
+    if (strictOrder) {
+      isAllCorrect =
+        JSON.stringify(userInput).toLowerCase() === JSON.stringify(correctAnswers).toLowerCase();
+
       feedbackDetails = correctAnswers.map((correctAnswer, index) => {
         const userAnswer = userInput[index] || "(keine Eingabe)";
         return {
@@ -51,34 +59,35 @@ function SichereArbeitsmethoden() {
       });
     } else {
       const matchedAnswers = new Set();
-  
-      feedbackDetails = correctAnswers.map((correctAnswer, index) => {
+
+      feedbackDetails = correctAnswers.map((correctAnswer) => {
         const userIndex = userInput.findIndex(
-          (userAnswer, userAnswerIndex) => userAnswer.toLowerCase() === correctAnswer.toLowerCase() && !matchedAnswers.has(userAnswerIndex)
+          (userAnswer, userAnswerIndex) =>
+            userAnswer.toLowerCase() === correctAnswer.toLowerCase() &&
+            !matchedAnswers.has(userAnswerIndex)
         );
-  
+
         if (userIndex !== -1) {
           matchedAnswers.add(userIndex);
-          points++;
-          return {
-            userAnswer: userInput[userIndex],
-            correctAnswer,
-            isCorrect: true,
-          };
+          return { userAnswer: userInput[userIndex], correctAnswer, isCorrect: true };
         } else {
-          return {
-            userAnswer: "",
-            correctAnswer,
-            isCorrect: false,
-          };
+          return { userAnswer: "", correctAnswer, isCorrect: false };
         }
       });
+
+      isAllCorrect = feedbackDetails.every((item) => item.isCorrect);
     }
-  
-    setScore((prev) => prev + points);
+
+    if (points !== undefined) {
+      earnedPoints = isAllCorrect ? points : 0;
+    } else {
+      earnedPoints = feedbackDetails.filter((item) => item.isCorrect).length;
+    }
+
+    setScore((prev) => prev + earnedPoints);
     setDetailedFeedback(feedbackDetails);
-    setFeedback(points === correctAnswers.length ? "Richtig" : "Falsch");
-  };  
+    setFeedback(isAllCorrect ? "Richtig" : "Falsch");
+  };
 
   const nextQuestion = () => {
     setAnswered(false);
@@ -104,7 +113,10 @@ function SichereArbeitsmethoden() {
 
   if (!data.length) return <p>Loading...</p>;
 
-  const totalPoints = data.reduce((sum, question) => sum + question.correctAnswers.length, 0);
+  const totalPoints = data.reduce(
+    (sum, question) => sum + (question.points ?? question.correctAnswers.length),
+    0
+  );
 
   if (isFinished)
     return (

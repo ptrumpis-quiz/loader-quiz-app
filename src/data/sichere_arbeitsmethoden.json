@@ -8,8 +8,7 @@
         "Schieben und Ziehen",
         "Kraftbetriebene Geräte",
         "Plan für das Unerwartete"
-      ],
-      "strictOrder": false
+      ]
     },
     {
       "question": "Erklärung der Kraftzonen (Wo, Wie, Warum).",
@@ -18,7 +17,7 @@
         "Nah am Körper",
         "Maximale Kraft mit höchstem Komfort"
       ],
-      "strictOrder": false
+      "points": 1
     },
     {
       "question": "Die 8 Punkte für das sichere Heben und Absetzen (in der richtigen Reihenfolge).",
@@ -42,8 +41,7 @@
         "Zügig gehen, nicht rennen",
         "Sicheren Stand einnehmen",
         "Keine Anlagen betreten"
-      ],
-      "strictOrder": false
+      ]
     }
   ]
   
