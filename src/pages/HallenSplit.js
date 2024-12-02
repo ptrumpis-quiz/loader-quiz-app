@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 function HallenSplit() {
+  const [originalData, setOriginalData] = useState([]);
   const [data, setData] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -14,7 +15,9 @@ function HallenSplit() {
 
   useEffect(() => {
     import("../data/hallen_split.json").then((module) => {
-      setData(module.default.sort(() => Math.random() - 0.5));
+      const shuffledData = module.default.sort(() => Math.random() - 0.5);
+      setOriginalData(shuffledData);
+      setData(shuffledData);
     });
   }, []);
 
@@ -60,6 +63,8 @@ function HallenSplit() {
   };
 
   const restartTest = () => {
+    const shuffledData = originalData.sort(() => Math.random() - 0.5);
+    setData(shuffledData);
     setIsFinished(false);
     setIsRepetition(false);
     setCurrentIndex(0);
@@ -72,13 +77,16 @@ function HallenSplit() {
   };
 
   const startRepititionMode = () => {
+    setData(wrongAnswers);
     setIsFinished(false);
     setIsRepetition(true);
-    setData(wrongAnswers);
-    setWrongAnswers([]);
     setCurrentIndex(0);
     setScore(0);
+    setTotalAnswered(0);
     setFeedback("");
+    setAnswered(false);
+    setCorrectAnswer("");
+    setWrongAnswers([]);
   };
 
   if (!data.length) return <p>Loading...</p>;
