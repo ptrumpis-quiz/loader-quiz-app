@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 function HallenSplit({ dataFile = "hallen_split.json" }) {
   const [originalData, setOriginalData] = useState([]);
   const [data, setData] = useState([]);
@@ -15,11 +23,12 @@ function HallenSplit({ dataFile = "hallen_split.json" }) {
 
   useEffect(() => {
     import(`../data/${dataFile}`).then((module) => {
-      const shuffledData = module.default.sort(() => Math.random() - 0.5);
-      setOriginalData(shuffledData);
+      const shuffledData = shuffleArray([...module.default]);
+      setOriginalData([...module.default]);
       setData(shuffledData);
     });
   }, [dataFile]);
+  
 
   const checkAnswer = (userAnswer) => {
     if (answered) return;
@@ -63,7 +72,7 @@ function HallenSplit({ dataFile = "hallen_split.json" }) {
   };
 
   const restartTest = () => {
-    const shuffledData = originalData.sort(() => Math.random() - 0.5);
+    const shuffledData = shuffleArray(originalData);
     setData(shuffledData);
     setIsFinished(false);
     setIsRepetition(false);
