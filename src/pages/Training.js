@@ -7,7 +7,8 @@ function Training({ category, goBack }) {
     <div style={{ paddingRight: "20px" }}>
       <button onClick={goBack}>Zurück</button>
       {category === "sichere_arbeitsmethoden" && <SichereArbeitsmethoden />}
-      {category === "hallen_split" && <HallenSplit />}
+      {category === "hallen_split" && <HallenSplit dataFile="hallen_split.json" />}
+      {category === "hallen_split_plz" && <HallenSplit dataFile="hallen_split_plz.json" />}
     </div>
   );
 }

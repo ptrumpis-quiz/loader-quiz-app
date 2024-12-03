@@ -23,7 +23,10 @@ function App() {
             Sichere Arbeitsmethoden
           </button>
           <button onClick={() => handleCategorySelect("hallen_split")}>
-            Hallen Split
+            Hallen Split <span style={{ color: "blue" }}>(nur Länder)</span>
+          </button>
+          <button onClick={() => handleCategorySelect("hallen_split_plz")}>
+            Hallen Split <span style={{ color: "blue" }}>(nur Postleitzahl)</span>
           </button>
         </div>
       )}
