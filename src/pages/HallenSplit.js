@@ -8,7 +8,7 @@ function shuffleArray(array) {
   return array;
 }
 
-function HallenSplit({ dataFile = "hallen_split.json" }) {
+function HallenSplit({ dataFile = "hallen_split.json", options = ["Halle 4", "Halle 7", "Fracht West", "Embargo"] }) {
   const [originalData, setOriginalData] = useState([]);
   const [data, setData] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -135,7 +135,7 @@ function HallenSplit({ dataFile = "hallen_split.json" }) {
       <div style={{ marginTop: "40px" }}></div>
       <h3 style={{ marginLeft: "100px" }}>{currentQuestion.question}</h3>
       <div>
-        {["Halle 4", "Halle 7", "Fracht West", "Embargo"].map((option) => (
+        {options.map((option) => (
           <button
             key={option}
             onClick={() => checkAnswer(option)}
