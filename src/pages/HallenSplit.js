@@ -29,32 +29,41 @@ function HallenSplit({ dataFile = "hallen_split.json", options = ["Halle 4", "Ha
     });
   }, [dataFile]);
   
-
   const checkAnswer = (userAnswer) => {
     if (answered) return;
     setAnswered(true);
-
+  
     const currentQuestion = data[currentIndex];
     const correctAnswers = currentQuestion.correctAnswers.map((ans) =>
       ans.trim()
     );
     const userAnswerTrimmed = userAnswer.trim();
     const isCorrect = correctAnswers.includes(userAnswerTrimmed);
-
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-      setCorrectAnswer("");
-    } else {
+  
+    if (!isCorrect) {
+      const storedErrors = JSON.parse(localStorage.getItem("hallenSplitErrors")) || {};
+      const questionKey = currentQuestion.question;
+  
+      storedErrors[questionKey] = {
+        count: (storedErrors[questionKey]?.count || 0) + 1,
+        correctAnswers: correctAnswers.join(", "),
+      };
+  
+      localStorage.setItem("hallenSplitErrors", JSON.stringify(storedErrors));
+  
       setCorrectAnswer(correctAnswers.join(", "));
       setWrongAnswers((prev) => [
         ...prev,
-        { question: currentQuestion.question, correctAnswers: correctAnswers }
+        { question: currentQuestion.question, correctAnswers: correctAnswers },
       ]);
+    } else {
+      setCorrectAnswer("");
     }
+  
+    setScore((prev) => (isCorrect ? prev + 1 : prev));
     setTotalAnswered((prev) => prev + 1);
-
     setFeedback(isCorrect ? "Richtig" : "Falsch");
-  };
+  };  
 
   const nextQuestion = () => {
     setAnswered(false);
@@ -98,6 +107,32 @@ function HallenSplit({ dataFile = "hallen_split.json", options = ["Halle 4", "Ha
     setWrongAnswers([]);
   };
 
+  const startErrorTraining = () => {
+    const storedErrors = JSON.parse(localStorage.getItem("hallenSplitErrors")) || {};
+
+    const errorData = Object.entries(storedErrors).map(([question, details]) => ({
+      question: question,
+      correctAnswers: details.correctAnswers.split(", "),
+    }));
+  
+    if (errorData.length === 0) {
+      alert("Es gibt keine gespeicherten Fehler.");
+      return;
+    }
+
+    setData(shuffleArray(errorData));
+    setOriginalData(errorData);
+    setIsFinished(false);
+    setIsRepetition(false);
+    setCurrentIndex(0);
+    setScore(0);
+    setTotalAnswered(0);
+    setFeedback("");
+    setAnswered(false);
+    setCorrectAnswer("");
+    setWrongAnswers([]);
+  };  
+
   if (!data.length) return <p>Loading...</p>;
   if (isFinished)
     return (
@@ -118,11 +153,14 @@ function HallenSplit({ dataFile = "hallen_split.json", options = ["Halle 4", "Ha
               ))}
             </ul>
             <button onClick={startRepititionMode}>
-              Fehlerhafte Antworten trainieren
+              Fehlerhafte Antworten wiederholen
             </button>
           </div>
         )}
         <button onClick={restartTest}>Test wiederholen</button>
+        <button onClick={startErrorTraining} style={{ marginTop: "10px", backgroundColor: "orange" }}>
+          Fehlertraining starten
+        </button>
       </div>
     );
 
