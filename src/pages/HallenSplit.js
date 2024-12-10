@@ -40,27 +40,46 @@ function HallenSplit({ dataFile = "hallen_split.json", options = ["Halle 4", "Ha
     const userAnswerTrimmed = userAnswer.trim();
     const isCorrect = correctAnswers.includes(userAnswerTrimmed);
   
-    if (!isCorrect) {
-      const storedErrors = JSON.parse(localStorage.getItem("hallenSplitErrors")) || {};
-      const questionKey = currentQuestion.question;
+    let storedErrors = JSON.parse(localStorage.getItem("hallenSplitErrors")) || {};
   
-      storedErrors[questionKey] = {
-        count: (storedErrors[questionKey]?.count || 0) + 1,
-        correctAnswers: correctAnswers.join(", "),
-      };
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+      setCorrectAnswer("");
   
-      localStorage.setItem("hallenSplitErrors", JSON.stringify(storedErrors));
+      if (storedErrors[currentQuestion.question]) {
+        storedErrors[currentQuestion.question].correctStreak =
+          (storedErrors[currentQuestion.question].correctStreak || 0) + 1;
   
+        if (storedErrors[currentQuestion.question].correctStreak >= 3) {
+          delete storedErrors[currentQuestion.question];
+        }
+      }
+    } else {
       setCorrectAnswer(correctAnswers.join(", "));
       setWrongAnswers((prev) => [
         ...prev,
         { question: currentQuestion.question, correctAnswers: correctAnswers },
       ]);
-    } else {
-      setCorrectAnswer("");
+  
+      if (!storedErrors[currentQuestion.question]) {
+        storedErrors[currentQuestion.question] = {
+          correctAnswers: correctAnswers.join(", "),
+          errorCount: 0,
+          correctStreak: 0
+        };
+      }
+  
+      storedErrors[currentQuestion.question].correctStreak = 0;
+
+      if (storedErrors[currentQuestion.question].count) {
+        storedErrors[currentQuestion.question].count += 1; // legacy
+      } else {
+        storedErrors[currentQuestion.question].errorCount += 1;
+      }
     }
   
-    setScore((prev) => (isCorrect ? prev + 1 : prev));
+    localStorage.setItem("hallenSplitErrors", JSON.stringify(storedErrors));
+  
     setTotalAnswered((prev) => prev + 1);
     setFeedback(isCorrect ? "Richtig" : "Falsch");
   };  
@@ -95,7 +114,8 @@ function HallenSplit({ dataFile = "hallen_split.json", options = ["Halle 4", "Ha
   };
 
   const startRepititionMode = () => {
-    setData(wrongAnswers);
+    const shuffledData = shuffleArray(wrongAnswers);
+    setData(shuffledData);
     setIsFinished(false);
     setIsRepetition(true);
     setCurrentIndex(0);
@@ -120,8 +140,8 @@ function HallenSplit({ dataFile = "hallen_split.json", options = ["Halle 4", "Ha
       return;
     }
 
-    setData(shuffleArray(errorData));
-    setOriginalData(errorData);
+    const shuffledData = shuffleArray(errorData)
+    setData(shuffledData);
     setIsFinished(false);
     setIsRepetition(false);
     setCurrentIndex(0);
